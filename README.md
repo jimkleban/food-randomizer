@@ -9,4 +9,4 @@ Once a restaurant is selected, GPT-3 is used to make a random menu suggestion fo
 2. install openai client for python `pip install openai`
 
 # add screen.png to README
-![screen](https://github.com/jimkleban/food-randomizer/screen.png)
+![screen](https://github.com/jimkleban/food-randomizer/blob/main/screen.png)
