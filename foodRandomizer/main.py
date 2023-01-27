@@ -4,6 +4,8 @@ from tkinter import messagebox
 from PIL import ImageTk
 from PIL import Image
 from random import *
+import openai
+import os
 
 class Page(tk.Frame):
     
@@ -55,45 +57,33 @@ class AllRestaurants(Page):
         #retrieve directory path
         dir_path = os.path.dirname(os.path.realpath(__file__))
         
-        def randomizeNum():
-            
+        def randomizeNum():            
             #self.after(5)
-            temp = randint(1,7)
-            self.someNumber = temp
-
-            #randomizes image placed onto frame when randomize is clicked
-            if(self.someNumber == 1):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/restaurants/applebees.jpg")
-
-            elif(self.someNumber == 2):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/restaurants/c-dropout.jpg")
-
-            elif(self.someNumber == 3):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/restaurants/chillis.jpg")
-
-            elif(self.someNumber == 4):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/restaurants/oreganos.jpg")
-
-            elif(self.someNumber == 5):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/restaurants/pita-jungle.jpg")
-
-            elif(self.someNumber == 6):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/restaurants/postinos.jpg")
-            
-            else:
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/restaurants/t-roadhouse.jpg")
+            # get a list of the files in the images/restaurants directory
+            files = os.listdir(dir_path + "/images/restaurants")
+            temp = randint(1, len(files))
+            self.someNumber = temp            
+            imagePath = Image.open(dir_path + "/images/restaurants/" + files[self.someNumber - 1])            
 
             #initializes random image
             self.randomImage = ImageTk.PhotoImage(imagePath)
-
             self.imageLabel.config(image = self.randomImage)
+
+            #update label
+            # call openai gpt-3 completion api with restaurant name and get a random menu selection
+            openai.api_key = open(dir_path + "/credentials/openai_api.key", "r").read()
+
+            response = openai.Completion.create(
+                engine = "text-davinci-003",
+                prompt = "You are a food recommendation expert. I am visiting the restuarnt " + files[self.someNumber - 1].split(".")[0] + \
+                     " in Tempe, AZ. Your task is to recommend a menu item for me to eat. \nRecommendation:\n",
+                temperature = 0,
+                max_tokens = 50,
+            )
+            # text is completion
+            text = response["choices"][0]["text"]
+
+            self.label.config(text = text)            
 
         #add label to top of the window as program title
         self.programTitle = tk.Label(self, text = "All Restuarants", font = ('Chalkboard', 60))
@@ -111,6 +101,11 @@ class AllRestaurants(Page):
 
         #initialize randomize button
         button = tk.Button(buttonframe, text = "Randomize", font = ('Chalkboard', 30), height = 2, width = 30, command = randomizeNum)
+
+        # text label below the randomize button
+        # prevent label from overflowing
+        self.label = tk.Label(self, text = "Recommendation:", font = ('Chalkboard', 16), wraplength = 500)
+        self.label.pack(padx = 5, pady = 20)
 
         #add button the grid
         button.grid(padx = 30,pady = 12, row = 0, column = 0, sticky = tk.W + tk.E)
@@ -145,91 +140,9 @@ class FastFood(Page):
             temp = randint(1,20)
             self.someNumber = temp
 
-            #randomizes image placed onto frame when randomize is clicked
-            if(self.someNumber == 1):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/mcdonalds.jpg")
-
-            elif(self.someNumber == 2):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/in-n-out.jpg")
-
-            elif(self.someNumber == 3):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/canes.jpg")
-
-            elif(self.someNumber == 4):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/c-fil-a.jpg")
-
-            elif(self.someNumber == 5):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/culvers.jpg")
-
-            elif(self.someNumber == 6):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/j-in-b.jpg")
-
-            elif(self.someNumber == 7):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/sonic.jpg")
-            
-            elif(self.someNumber == 8):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/wendys.jpg")
-            
-            elif(self.someNumber == 9):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/burger-king.jpg")
-            
-            elif(self.someNumber == 10):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/chipotle.jpg")
-            
-            elif(self.someNumber == 11):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/dominos.jpg")
-            
-            elif(self.someNumber == 12):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/five-guys.jpg")
-            
-            elif(self.someNumber == 13):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/ikes.jpg")
-
-            elif(self.someNumber == 14):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/panda.jpg")
-            
-            elif(self.someNumber == 8):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/pei-wei.jpg")
-            
-            elif(self.someNumber == 15):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/popeyes.jpg")
-
-            elif(self.someNumber == 16):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/portillos.jpg")
-            
-            elif(self.someNumber == 17):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/subway.jpg")
-
-            elif(self.someNumber == 18):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/whataburger.jpg")
-
-            elif(self.someNumber == 19):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/wingstop.jpg")
-
-            else:
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/tacobell.jpg")
-
+            # get a list of the files in the images/restaurants directory
+            files = os.listdir(dir_path + "/images/fast_food")
+            imagePath = Image.open(dir_path + "/images/fast_food/" + files[self.someNumber - 1])                        
 
             #initializes random image
             self.randomImage = ImageTk.PhotoImage(imagePath)
@@ -286,58 +199,8 @@ class BreakfastFood(Page):
             self.someNumber = temp
 
             #randomizes image placed onto frame when randomize is clicked
-            if(self.someNumber == 1):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/snooze.jpg")
-
-            elif(self.someNumber == 2):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/crepe-club.jpg")
-
-            elif(self.someNumber == 3):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/einsteins.jpg")
-
-            elif(self.someNumber == 4):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/morning-squeeze.jpg")
-
-            elif(self.someNumber == 5):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/sunnys.jpg")
-
-            elif(self.someNumber == 6):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/first-watch.jpg")
-
-            elif(self.someNumber == 7):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/nektar.jpg")
-
-            elif(self.someNumber == 8):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/starbucks.jpg")   
-
-            elif(self.someNumber == 9):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/dutch.jpg")
-
-            elif(self.someNumber == 10):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/jamba.jpg")
-
-            elif(self.someNumber == 11):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/mcdonalds.jpg")
-
-            elif(self.someNumber == 12):
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/fast_food/c-fil-a.jpg") 
-            
-            else:
-                #initialize image of restaurant logo
-                imagePath = Image.open(dir_path + "/images/breakfast/ihop.jpg")
-
+            files = os.listdir(dir_path + "/images/breakfast")
+            imagePath = Image.open(dir_path + "/images/breakfast/" + files[self.someNumber - 1])
 
             #initializes random image
             self.randomImage = ImageTk.PhotoImage(imagePath)
