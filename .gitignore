@@ -1,3 +1,4 @@
 
 .DS_Store
-credentials/*.key
+foodRandomizer/credentials/*.key
+foodRandomizer/credentials/openai_api.key
